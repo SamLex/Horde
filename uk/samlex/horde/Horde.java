@@ -18,7 +18,7 @@
  */
 
 package uk.samlex.horde;
-
+//TODO [FROZEN] Add more monsters to spawn and add directory and add AntiMobSpawn support
 import java.util.Timer;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -71,13 +71,9 @@ public class Horde extends JavaPlugin {
 		//get data from file
 		props.scanner();
 
-		//time variable for timer
-		long time = (HordeDisk.getTime() * 1000);
+		//activates timer
+		hordeTimerCall();
 
-		//sets timer going
-		hordeTime.scheduleAtFixedRate((new HordeExecution(this)), time, time);
-		
-		
 		//welcome message
 		System.out.println( prefix() + " Enabled and ready to cause havok!" );
 	}
@@ -97,5 +93,19 @@ public class Horde extends JavaPlugin {
 	//getter for prefix
 	public static String getPrefix() {
 		return prefix;
+	}
+
+	public void hordeTimerCall(){
+
+		//time variable for timer
+		long time = (HordeDisk.getTime() * 1000);
+
+		try{
+			
+		//sets timer going
+		hordeTime.scheduleAtFixedRate((new HordeExecution(this)), time, time);
+		
+		}catch(NullPointerException e) {}
+		
 	}
 }

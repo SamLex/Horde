@@ -54,69 +54,81 @@ public class HordeExecution extends TimerTask {
 
 	//another check for number of times done
 	private static boolean done = false;
-	
+
 	//what the timer is to run
 	@Override
-	public void run() {
+	public void run() throws NullPointerException {
 
-		done = false;
-		//System.out.println("Run"); //debug print
+		try{
+			done = false;
+			//System.out.println("Run"); //debug print
 
-		//As long as there is a player in the game, start process
-		while(isPlayerIn() == true && done == false){
+			//As long as there is a player in the game, start process
+			while(isPlayerIn() ==true && done == false){
 
-			//declare local variables
-			int number = 0, count = 0, rndPlayer = 0, rndX = 0, rndY = 0, rndZ = 0, rndMob = 0, realX = 0, realY = 0, realZ = 0;
-			int numberRnd = (int) (Math.random() * 10);
-			int distance = HordeDisk.getDistance();
-			int mdistance = 0 - distance;
-			Player[] players = null;
+				//declare local variables
+				int number = 0, count = 0, rndPlayer = 0, rndX = 0, rndY = 0, rndZ = 0, rndMob = 0, realX = 0, realY = 0, realZ = 0;
+				int numberRnd = (int) (Math.random() * 10);
+				int distance = HordeDisk.getDistance();
+				int mdistance = 0 - distance;
+				Player[] players = null;
 
-			//gets list of all online players
-			players = plugin.getServer().getOnlinePlayers();
+				//gets list of all online players
+				players = plugin.getServer().getOnlinePlayers(); 
 
-			//more local variables
-			int numPlayers = players.length;
-			Player luckyPlayer = null;
-			boolean midAir, feet, head;
-			Block block;
+				//more local variables
+				int numPlayers = players.length;
+				Player luckyPlayer = null;
+				boolean midAir, feet, head;
+				Block block;
+				World playerWorld = null;
 
-			//fills list with monster types (could be done with enum?)
-			mob.add(CreatureType.CREEPER);
-			mob.add(CreatureType.SKELETON);
-			mob.add(CreatureType.SPIDER);
-			mob.add(CreatureType.ZOMBIE);
+				//fills list with monster types (could be done with enum?)
+				mob.add(CreatureType.CREEPER);
+				mob.add(CreatureType.SKELETON);
+				mob.add(CreatureType.SPIDER);
+				mob.add(CreatureType.ZOMBIE);
 
-			//if the number in file is 0, chose a random number. If a number use number
-			if(HordeDisk.getNumber() == 0){
+				//if the number in file is 0, chose a random number. If a number use number
+				if(HordeDisk.getNumber() == 0){
 
-				number = numberRnd;
-			}else if((HordeDisk.getNumber()) > 0){
+					number = numberRnd;
+				}else if((HordeDisk.getNumber()) > 0){
 
-				number = HordeDisk.getNumber();
-			}
-
-			//			System.out.println("After choose number of times"); //debug print
-
-			//continue doing this process until the selected number of times has been achieved 
-			for (count =1; count <= number; count++) {
-
-				//chooses a random player to 'pray' on
-				if(numPlayers > 1){
-
-					rndPlayer = new Random().nextInt((numPlayers + 0 + 1 ) + 0);
-					try{
-					luckyPlayer = players[rndPlayer];
-					}catch(ArrayIndexOutOfBoundsException e){}
-				}else{
-					try{
-					luckyPlayer = players[0];
-					}catch(ArrayIndexOutOfBoundsException e) {}
+					number = HordeDisk.getNumber();
 				}
-				//get the players world (does this give multi-world support?)
-				World playerWorld = luckyPlayer.getWorld();
+
+				//			System.out.println("After choose number of times"); //debug print
+
+				//continue doing this process until the selected number of times has been achieved 
+				for (count =1; count <= number; count++) {
+
+					//chooses a random player to 'pray' on
+					if(numPlayers > 1){ 
+
+						rndPlayer = new Random().nextInt((numPlayers + 0 + 1 ) + 0);
+
+						try{
+
+							luckyPlayer = players[rndPlayer];
+
+						}catch(ArrayIndexOutOfBoundsException e){}
+
+					}else{
+
+						try{
+
+							luckyPlayer = players[0];
+
+						}catch(ArrayIndexOutOfBoundsException e) {}
+					}
+
+					//get the players world (does this give multi-world support?)
+					playerWorld = luckyPlayer.getWorld();
+				}
 
 				//				System.out.println("Before coordinate select"); //debug print
+
 
 				do{
 
@@ -125,7 +137,13 @@ public class HordeExecution extends TimerTask {
 					rndY = new Random().nextInt((distance - mdistance + 1) + mdistance);
 					rndZ = new Random().nextInt((distance - mdistance + 1) + mdistance);
 
-					block = luckyPlayer.getLocation().getBlock().getRelative(rndX, rndY, rndZ);
+					try{
+
+						block = luckyPlayer.getLocation().getBlock().getRelative(rndX, rndY, rndZ);
+
+					}catch(NullPointerException e ){
+						return;
+					}
 
 					//checks the block is not in mid air
 					if(block.getRelative(0, -1, 0).getType().equals(Material.AIR)){
@@ -159,13 +177,13 @@ public class HordeExecution extends TimerTask {
 				//				System.out.println("After coordinate select"); //debug print
 
 				//chooses a random monster to spawn
-				rndMob = (int) (Math.random() * 4);
+				rndMob = (int) (Math.random() * (mob.size()));
 
 				//turns the random coordinates in to a location
 				realX = luckyPlayer.getLocation().getBlock().getRelative(rndX, 0, 0).getX();
 				realY = luckyPlayer.getLocation().getBlock().getRelative(rndY, 0, 0).getY();
 				realZ = luckyPlayer.getLocation().getBlock().getRelative(rndZ, 0, 0).getZ();
-				
+
 				Location spawnloc = new Location(playerWorld, realX, realY, realZ);
 
 				//spawns the randomly selected mob in the random location
@@ -175,10 +193,13 @@ public class HordeExecution extends TimerTask {
 
 				//				System.out.println("End"); //debug print
 			}
-			
+
 			done = true;
-		}
+			
+		}catch(NullPointerException e){}
+		
 	}
+
 
 	//getter and setter for playerIn
 	public static boolean isPlayerIn() {

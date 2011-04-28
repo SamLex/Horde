@@ -49,6 +49,7 @@ public class HordePlayerListener extends PlayerListener {
 		
 		//set playerIn variable to false when the last player leaves
 		if(plugin.getServer().getOnlinePlayers() == null){
+			
 			HordeExecution.setPlayerIn(false);
 		}
 	}
