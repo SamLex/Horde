@@ -1,5 +1,5 @@
 name: Horde
-version: 1.01
+version: 1.02
 main: uk.samlex.horde.Horde
 author: Sam_lex
 description: Spawns a user set or random number of random monsters on a user set timer in a user set distance around any user 

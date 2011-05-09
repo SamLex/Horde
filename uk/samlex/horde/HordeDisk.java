@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
 
-/**
+/*
  * Horde Disk Class
- * @author Sam_Lex
+ * Made by Sam_Lex, 2011
  */
 
 public class HordeDisk {
@@ -52,7 +52,7 @@ public class HordeDisk {
 			if(props.createNewFile() == true){
 				
 				//displays message when creating file
-				System.out.println(Horde.getPrefix() + " Properties file for Horde not found...creating new file");
+				Horde.log.info(Horde.getPrefix() + " Properties file for Horde not found...creating new file");
 
 				//creates writer object 
 				final Writer output = new BufferedWriter(new FileWriter(props));
@@ -67,7 +67,7 @@ public class HordeDisk {
 		}catch(IOException e){
 			
 			//displays message if file could not be created
-			System.out.println(Horde.getPrefix() + " [WARNING] Could not create properties file for Horde");
+			Horde.log.info(Horde.getPrefix() + " [WARNING] Could not create properties file for Horde");
 		}
 
 		try{
@@ -87,7 +87,7 @@ public class HordeDisk {
 		}catch(FileNotFoundException e){
 			
 			//displays message if file could not be found
-			System.out.println(Horde.getPrefix() + " [WARNING] Horde Properties file could not be found");
+			Horde.log.info(Horde.getPrefix() + " [WARNING] Horde Properties file could not be found");
 		}
 		
 	}

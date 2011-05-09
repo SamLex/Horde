@@ -22,9 +22,9 @@ package uk.samlex.horde;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityListener;
 
-/**
+/*
  * Horde Entity Listener
- * @author Sam_Lex
+ * Made by Sam_Lex, 2011
  */
 
 public class HordeEntityListener extends EntityListener{

@@ -19,23 +19,18 @@
 
 package uk.samlex.horde;
 
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.TimerTask;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
-import java.lang.ArrayIndexOutOfBoundsException;
 
-/**
+/*
  * Horde Execution Class
- * @author Sam_Lex
+ * Made by Sam_Lex, 2011
  */
 
-public class HordeExecution extends TimerTask {
+public class HordeExecution {
 
 	//plugin variable
 	public static Horde plugin;
@@ -43,163 +38,172 @@ public class HordeExecution extends TimerTask {
 
 	//plugin variable is instance of plugin
 	public HordeExecution(Horde instance){
-		plugin = instance;
-	}
 
-	//creates list of monsters (not yet filled)
-	private static ArrayList<CreatureType> mob = new ArrayList<CreatureType>();
+		plugin = instance;
+
+		spawn();
+	}
 
 	//variable to check that players are in server
 	private static boolean playerIn = false;
 
-	//another check for number of times done
-	private static boolean done = false;
+	public void spawn(){
 
-	//what the timer is to run
-	@Override
-	public void run() throws NullPointerException {
+		//gets list of all online players
+		Player[] players = plugin.getServer().getOnlinePlayers(); 
 
-		try{
-			done = false;
-			//System.out.println("Run"); //debug print
+		if(players.length == 0){
 
-			//As long as there is a player in the game, start process
-			while(isPlayerIn() ==true && done == false){
+//			Horde.log.info("Null Pointer Stopper"); //debug print
 
-				//declare local variables
-				int number = 0, count = 0, rndPlayer = 0, rndX = 0, rndY = 0, rndZ = 0, rndMob = 0, realX = 0, realY = 0, realZ = 0;
-				int numberRnd = (int) (Math.random() * 10);
-				int distance = HordeDisk.getDistance();
-				int mdistance = 0 - distance;
-				Player[] players = null;
+		}else{
 
-				//gets list of all online players
-				players = plugin.getServer().getOnlinePlayers(); 
+//			Horde.log.info("STARTING SPAWN"); //debug print
 
-				//more local variables
-				int numPlayers = players.length;
-				Player luckyPlayer = null;
-				boolean midAir, feet, head;
-				Block block;
-				World playerWorld = null;
+			//declare local variables
+			int number = HordeDisk.getNumber(), count = 0, rndPlayer = 0, rndX = 0, rndY = 0, rndZ = 0, rndMob = 0, realX = 0, realY = 0, realZ = 0;
+			int numberRnd = new Random().nextInt(10 - 0 + 1);
+			int distance = HordeDisk.getDistance();
+			int mdistance = 0 - distance;
 
-				//fills list with monster types (could be done with enum?)
-				mob.add(CreatureType.CREEPER);
-				mob.add(CreatureType.SKELETON);
-				mob.add(CreatureType.SPIDER);
-				mob.add(CreatureType.ZOMBIE);
+			//more local variables
+			int numPlayers = players.length;
+			Player luckyPlayer = null;
+			Block block;
+			World playerWorld = null;
 
-				//if the number in file is 0, chose a random number. If a number use number
-				if(HordeDisk.getNumber() == 0){
+			//variable to allow a timeout;
+			boolean timedout = false;
 
-					number = numberRnd;
-				}else if((HordeDisk.getNumber()) > 0){
+			//variable for checking spawn location
+			boolean spawnLocOK = false;
 
-					number = HordeDisk.getNumber();
+			//if the number in file is 0, choose a random number.
+			if(number == 0){
+
+				number = numberRnd;
+			}
+
+//			Horde.log.info("After choose number of times"); //debug print
+
+			//continue doing this process until the selected number of times has been achieved 
+			for (count = 0; count <= (number - 1); count++) {
+
+				//chooses a random player to 'pray' on
+				if(numPlayers != 1){ 
+
+					rndPlayer = new Random().nextInt((numPlayers + 1));
+
+					luckyPlayer = players[rndPlayer];
+
+				}else if(numPlayers == 1){
+
+					luckyPlayer = players[0];
+
 				}
 
-				//			System.out.println("After choose number of times"); //debug print
+				//get the players world (does this give multi-world support?)
+				playerWorld = luckyPlayer.getWorld();
 
-				//continue doing this process until the selected number of times has been achieved 
-				for (count =1; count <= number; count++) {
 
-					//chooses a random player to 'pray' on
-					if(numPlayers > 1){ 
-
-						rndPlayer = new Random().nextInt((numPlayers + 0 + 1 ) + 0);
-
-						try{
-
-							luckyPlayer = players[rndPlayer];
-
-						}catch(ArrayIndexOutOfBoundsException e){}
-
-					}else{
-
-						try{
-
-							luckyPlayer = players[0];
-
-						}catch(ArrayIndexOutOfBoundsException e) {}
-					}
-
-					//get the players world (does this give multi-world support?)
-					playerWorld = luckyPlayer.getWorld();
-				}
-
-				//				System.out.println("Before coordinate select"); //debug print
+//				Horde.log.info("Before coordinate select"); //debug print
 
 
 				do{
+
+					//set variable to false to stop spawn if location is bad
+					spawnLocOK = false;
+
+					//variable to let the selection time out if it is taking to long
+					int timeout = 0;
 
 					//selects a random location for the monster to spawn
 					rndX = new Random().nextInt((distance - mdistance + 1) + mdistance);
 					rndY = new Random().nextInt((distance - mdistance + 1) + mdistance);
 					rndZ = new Random().nextInt((distance - mdistance + 1) + mdistance);
 
-					try{
+					block = luckyPlayer.getLocation().getBlock().getRelative(rndX, rndY, rndZ);
 
-						block = luckyPlayer.getLocation().getBlock().getRelative(rndX, rndY, rndZ);
+					//checks if the block is suitable for a mob to spawn in
+					if(block.getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block spawn in is air
 
-					}catch(NullPointerException e ){
-						return;
+						if(block.getRelative(0, -1, 0).getTypeId() != luckyPlayer.getLocation().getBlock().getTypeId()){ //block below is not air
+
+							if(block.getRelative(0, -2, 0).getTypeId() != luckyPlayer.getLocation().getBlock().getTypeId()){ //block two below is not air
+
+								if(block.getRelative(0, 1, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block above is air
+
+									if(block.getRelative(0, 2, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two above is air
+
+										if(block.getRelative(1, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block infront is air
+
+											if(block.getRelative(2, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two infront is air
+
+												if(block.getRelative(-1, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block behind is air
+
+													if(block.getRelative(-2, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two behind is air
+
+														if(block.getRelative(0, 0, 1).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block one side is air
+
+															if(block.getRelative(0, 0, 2).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two one side is air
+
+																if(block.getRelative(0, 0, -1).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block other side is air
+
+																	if(block.getRelative(0, 0, -2).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two other side is air
+
+																		spawnLocOK = true;
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 
-					//checks the block is not in mid air
-					if(block.getRelative(0, -1, 0).getType().equals(Material.AIR)){
+					timeout++;
 
-						midAir = true;
-					}else{
+					if(timeout == 1000){
 
-						midAir = false;
+						timedout = true;
+
+//						Horde.log.info("Timed Out!"); //debug print
+
+						break;
 					}
 
-					//checks that the monster will have head room
-					if(block.getRelative(0, 1, 0).getType().equals(Material.AIR)){
+				}while(spawnLocOK == false);
 
-						head = true;
-					}else{
+				if(timedout != true) {
 
-						head = false;
-					}
+//					Horde.log.info("After coordinate select"); //debug print
 
-					//checks the monster is not trying to spawn in anything other than air
-					if(block.getType().equals(Material.AIR)){
+					//chooses a random monster to spawn
+					rndMob = new Random().nextInt((Horde.mob.size()));
 
-						feet = true;
-					}else{
+					//turns the random coordinates in to a location
+					realX = luckyPlayer.getLocation().getBlock().getRelative(rndX, 0, 0).getX();
+					realY = luckyPlayer.getLocation().getBlock().getRelative(rndY, 0, 0).getY();
+					realZ = luckyPlayer.getLocation().getBlock().getRelative(rndZ, 0, 0).getZ();
 
-						feet = false;
-					}
+					Location spawnloc = new Location(playerWorld, realX, realY, realZ);
 
-				}while(midAir == true || head == false || feet == false);
+					//spawns the randomly selected mob in the random location
+					playerWorld.spawnCreature(spawnloc, (Horde.mob.get(rndMob)));
 
-				//				System.out.println("After coordinate select"); //debug print
+//					Horde.log.info(Horde.getPrefix() + " Spawning Mobs " + number + " " + count); //debug print
+				}
 
-				//chooses a random monster to spawn
-				rndMob = (int) (Math.random() * (mob.size()));
+//				Horde.log.info("End"); //debug print
 
-				//turns the random coordinates in to a location
-				realX = luckyPlayer.getLocation().getBlock().getRelative(rndX, 0, 0).getX();
-				realY = luckyPlayer.getLocation().getBlock().getRelative(rndY, 0, 0).getY();
-				realZ = luckyPlayer.getLocation().getBlock().getRelative(rndZ, 0, 0).getZ();
-
-				Location spawnloc = new Location(playerWorld, realX, realY, realZ);
-
-				//spawns the randomly selected mob in the random location
-				playerWorld.spawnCreature(spawnloc, (mob.get(rndMob)));
-
-				//System.out.println(Horde.getPrefix() + " Spawning Mobs"); //debug print
-
-				//				System.out.println("End"); //debug print
 			}
-
-			done = true;
-			
-		}catch(NullPointerException e){}
-		
+		}
 	}
-
 
 	//getter and setter for playerIn
 	public static boolean isPlayerIn() {

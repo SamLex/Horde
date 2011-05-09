@@ -23,9 +23,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
+/*
  * Horde Player Listener
- * @author Sam_Lex
+ * Made by Sam_Lex, 2011
  */
 
 public class HordePlayerListener extends PlayerListener {
