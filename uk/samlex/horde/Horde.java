@@ -38,7 +38,6 @@ public class Horde extends JavaPlugin {
 
 	//event listeners
 	private final HordeEntityListener entityListener = new HordeEntityListener(this);
-	private final HordePlayerListener playerListener = new HordePlayerListener(this);
 
 	//variable object
 	HordeDisk props = new HordeDisk();
@@ -67,8 +66,6 @@ public class Horde extends JavaPlugin {
 
 		//register events
 		pm.registerEvent(Event.Type.ENTITY_COMBUST, entityListener, Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Monitor, this);
 
 		//allows the prefix to be used in scanner
 		prefix();
