@@ -72,6 +72,9 @@ public class HordeExecution {
 			Block block;
 			World playerWorld = null;
 
+			//variable to let the selection time out if it is taking to long
+			int timeout = 0;
+			
 			//variable to allow a timeout;
 			boolean timedout = false;
 
@@ -114,9 +117,6 @@ public class HordeExecution {
 					//set variable to false to stop spawn if location is bad
 					spawnLocOK = false;
 
-					//variable to let the selection time out if it is taking to long
-					int timeout = 0;
-
 					//selects a random location for the monster to spawn
 					rndX = new Random().nextInt((distance - mdistance + 1) + mdistance);
 					rndY = new Random().nextInt((distance - mdistance + 1) + mdistance);
@@ -125,31 +125,31 @@ public class HordeExecution {
 					block = luckyPlayer.getLocation().getBlock().getRelative(rndX, rndY, rndZ);
 
 					//checks if the block is suitable for a mob to spawn in
-					if(block.getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block spawn in is air
+					if(block.getTypeId() == 0){ //block spawn in is air
 
-						if(block.getRelative(0, -1, 0).getTypeId() != luckyPlayer.getLocation().getBlock().getTypeId()){ //block below is not air
+						if(block.getRelative(0, -1, 0).getTypeId() != 0){ //block below is not air
 
-							if(block.getRelative(0, -2, 0).getTypeId() != luckyPlayer.getLocation().getBlock().getTypeId()){ //block two below is not air
+							if(block.getRelative(0, -2, 0).getTypeId() != 0){ //block two below is not air
 
-								if(block.getRelative(0, 1, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block above is air
+								if(block.getRelative(0, 1, 0).getTypeId() == 0){ //block above is air
 
-									if(block.getRelative(0, 2, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two above is air
+									if(block.getRelative(0, 2, 0).getTypeId() == 0){ //block two above is air
 
-										if(block.getRelative(1, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block infront is air
+										if(block.getRelative(1, 0, 0).getTypeId() == 0){ //block infront is air
 
-											if(block.getRelative(2, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two infront is air
+											if(block.getRelative(2, 0, 0).getTypeId() == 0){ //block two infront is air
 
-												if(block.getRelative(-1, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block behind is air
+												if(block.getRelative(-1, 0, 0).getTypeId() == 0){ //block behind is air
 
-													if(block.getRelative(-2, 0, 0).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two behind is air
+													if(block.getRelative(-2, 0, 0).getTypeId() == 0){ //block two behind is air
 
-														if(block.getRelative(0, 0, 1).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block one side is air
+														if(block.getRelative(0, 0, 1).getTypeId() == 0){ //block one side is air
 
-															if(block.getRelative(0, 0, 2).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two one side is air
+															if(block.getRelative(0, 0, 2).getTypeId() == 0){ //block two one side is air
 
-																if(block.getRelative(0, 0, -1).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block other side is air
+																if(block.getRelative(0, 0, -1).getTypeId() == 0){ //block other side is air
 
-																	if(block.getRelative(0, 0, -2).getTypeId() == luckyPlayer.getLocation().getBlock().getTypeId()){ //block two other side is air
+																	if(block.getRelative(0, 0, -2).getTypeId() == 0){ //block two other side is air
 
 																		spawnLocOK = true;
 																	}
@@ -179,7 +179,7 @@ public class HordeExecution {
 
 				}while(spawnLocOK == false);
 
-				if(timedout != true) {
+				if(timedout == false) {
 
 //					Horde.log.info("After coordinate select"); //debug print
 
