@@ -2,6 +2,15 @@ Horde by Sam_Lex
 
 Bukkit Plugin
 
-This plugin spawns a random or users set number of monsters, each random, 
-on a user set timer, within a user set distance of a randomly selected player. 
-This plugin also lets you disable monsters burning in sunlight.
+Provides a highly configurable extra creature spawner with per world settings.
+
+Options include:
+	*The selection of how strict the spawns should be in terms of where they are
+	*The selection of how often the spawns happen
+	*The selection of maximum and minimum distances for the spawns
+	*Configurable messages to be sent to the server or/and the server on a Horde attack
+	*The selection of which mobs can be spawned
+	*The option of randomness
+	*And much more
+	
+See http://dev.bukkit.org/server-mods/horde/ for details

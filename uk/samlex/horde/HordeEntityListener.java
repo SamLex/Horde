@@ -1,7 +1,7 @@
 /*
- * This file is part of the Bukkit plugin Horde
+ * Horde, a plugin for the Minecraft server modification Bukkit. Provides extra in game creature spawns
  * 
- * Copyright (C) 2011 <euan_hunt@hotmail.co.uk>
+ * Copyright (C) 2011 Euan James Hunter <euanhunter117@gmail.com>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,28 +21,32 @@ package uk.samlex.horde;
 
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityListener;
-
-/*
- * Horde Entity Listener
- * Made by Sam_Lex, 2011
- */
+import org.bukkit.plugin.Plugin;
 
 public class HordeEntityListener extends EntityListener{
 
-	//variable plugin
-	public static Horde plugin;
+	private Plugin inst;
 
-	//plugin variable is instance of plugin
-	public HordeEntityListener(Horde instance){
-		plugin = instance;
+	/*
+	 * Constructor that is passed the instance of the plugin
+	 */
+	protected HordeEntityListener(Plugin plugin){
+		this.inst = plugin;
 	}
 
-	//events to catch
-	public void onEntityCombust(EntityCombustEvent event){
-		if(HordeDisk.isFire() == true){
-			
-			//stop mobs being set on fire by the sun
-			event.setCancelled(true);
+	/*
+	 * Handles creatures bursting into flames thanks to the sun. Checks the configuration file and will stop the event if it is to be stopped
+	 */
+	@Override
+	public void onEntityCombust(EntityCombustEvent ece) {
+		if(this.inst.getConfig().contains(ece.getEntity().getLocation().getWorld().getName())){
+			if(!this.inst.getConfig().getBoolean(ece.getEntity().getLocation().getWorld().getName()+".sunburn")){
+				ece.setCancelled(true);
+			}
+		}else{
+			if(!this.inst.getConfig().getBoolean("Default.sunburn")){
+				ece.setCancelled(true);
+			}
 		}
 	}
 }

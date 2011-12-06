@@ -1,0 +1,257 @@
+/*
+ * Horde, a plugin for the Minecraft server modification Bukkit. Provides extra in game creature spawns
+ * 
+ * Copyright (C) 2011 Euan James Hunter <euanhunter117@gmail.com>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package uk.samlex.horde;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
+public class HordeSpawner implements Runnable {
+
+	private Plugin inst;
+	private World world;
+	private String worldName;
+	private ArrayList<CreatureType> mobs;
+	private Random rand;
+	private Player target;
+	private boolean skip;
+	private int xCooSet, yCooSet, zCooSet, numMob, max, min, trig, temp;
+	private Block spawn;
+	private CreatureType spawnedCreature;
+	private ArrayList<String> players, creatures;
+
+	/*
+	 * Constructor that is passed the instance of the plugin, the world this timer is going to be working on and whether the default 
+	 * setting shouldn't be used
+	 */
+	protected HordeSpawner(Plugin plugin, World w, boolean multi){
+		this.inst = plugin;
+		this.world = w;
+		if(multi)
+			this.worldName = w.getName();
+		else
+			this.worldName = "Default";
+		this.mobsList();
+	}
+
+	/*
+	 * Randomly spawns a number of creature in a random location near a random player
+	 */
+	public void run() {
+
+		if(world.getPlayers().size()!=0){
+			rand = new Random(System.currentTimeMillis());
+			skip = false;
+			max = this.inst.getConfig().getInt(worldName+".max distance");
+			min = this.inst.getConfig().getInt(worldName+".min distance");
+			players = new ArrayList<String>(0); 
+			creatures = new ArrayList<String>(0);
+
+			if(world.getTime()>=this.inst.getConfig().getInt(worldName+".time start") && 
+					world.getTime()<=this.inst.getConfig().getInt(worldName+".time stop")){
+				if(this.inst.getConfig().getInt(worldName+".number of monsters")==0)
+					numMob = rand.nextInt(this.inst.getConfig().getInt(worldName+".random cap")+1);
+				else
+					numMob = this.inst.getConfig().getInt(worldName+".number of monsters");
+				for(int count=0;count<numMob;count++){
+					if(this.inst.getConfig().getBoolean("async")){
+						while(true){
+							skip=false;
+
+							target = world.getPlayers().get(rand.nextInt(world.getPlayers().size()));
+
+							xCooSet = (rand.nextBoolean() ? 1 : -1) * (rand.nextInt(max-min+1)+min);
+							temp = (rand.nextInt(max-min+1)+min);
+							trig = (int) Math.sqrt((temp * temp) - (xCooSet * xCooSet));
+							yCooSet = (rand.nextBoolean() ? 1 : -1) * trig;
+							temp = (rand.nextInt(max-min+1)+min);
+							trig = (int) Math.sqrt((temp * temp) - (xCooSet * xCooSet));
+							zCooSet = (rand.nextBoolean() ? 1 : -1) * trig;
+
+							spawn = target.getLocation().getBlock().getRelative(xCooSet, yCooSet, zCooSet);
+							if(this.inst.getConfig().getString("checks").equals("high")){
+								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0 && spawn.getRelative(0, 1, 0).getTypeId()==0 
+										&& spawn.getRelative(0, 2, 0).getTypeId()==0)
+									break;
+							}else if(this.inst.getConfig().getString("checks").equals("low")){
+								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0)
+									break;
+							}else if(this.inst.getConfig().getString("checks").equals("none")){
+								break;
+							}else{
+								skip = true;
+								break;
+							}
+						}
+					}else{
+						for(byte tryCount=0;tryCount<=89;tryCount++){
+							skip=false;
+
+							target = world.getPlayers().get(rand.nextInt(world.getPlayers().size()));
+
+							xCooSet = (rand.nextBoolean() ? 1 : -1) * (rand.nextInt(max-min+1)+min);
+							temp = (rand.nextInt(max-min+1)+min);
+							trig = (int) Math.sqrt((temp * temp) - (xCooSet * xCooSet));
+							yCooSet = (rand.nextBoolean() ? 1 : -1) * trig;
+							temp = (rand.nextInt(max-min+1)+min);
+							trig = (int) Math.sqrt((temp * temp) - (xCooSet * xCooSet));
+							zCooSet = (rand.nextBoolean() ? 1 : -1) * trig;
+
+							spawn = target.getLocation().getBlock().getRelative(xCooSet, yCooSet, zCooSet);
+							if(this.inst.getConfig().getString("checks").equals("high")){
+								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0 && spawn.getRelative(0, 1, 0).getTypeId()==0 
+										&& spawn.getRelative(0, 2, 0).getTypeId()==0)
+									break;
+							}else if(this.inst.getConfig().getString("checks").equals("low")){
+								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0)
+									break;
+							}else if(this.inst.getConfig().getString("checks").equals("none")){
+								break;
+							}else{
+								skip = true;
+								break;
+							}
+						}
+					}
+				}
+				if(!skip){
+					spawnedCreature = this.mobs.get(rand.nextInt(mobs.size()));
+					world.spawnCreature(spawn.getLocation(), spawnedCreature);
+					players.add(target.getName());
+					creatures.add(spawnedCreature.getName());
+					playerMessageSender(this.inst.getConfig().getString(worldName+".player message"), spawnedCreature.getName(), target);
+				}else{
+					System.out.println("Attempted a spawn but could not find a suitable location"); //!
+				}
+			}
+			serverMessageSender(this.inst.getConfig().getString(worldName+".server message"), players, creatures, worldName);
+		}
+		rand = null;
+		target = null;
+		spawn = null;
+		spawnedCreature = null;
+		players = null; 
+		creatures = null;	
+	}
+
+	/*
+	 * Handles messages to be broadcast to the server on a Horde attack
+	 */
+	private void serverMessageSender(String message, ArrayList<String> players, ArrayList<String> creatures, String spawnWorld){		
+		if(message.length() * players.size() * creatures.size()== 0){
+			return;
+		}
+
+		String player = "", creature = "";
+		ArrayList<String> playerTempHolder = new ArrayList<String>(0);
+
+		for (String playerName : players) {
+			if(!playerTempHolder.contains(playerName)){
+				playerTempHolder.add(playerName);
+			}
+		}
+
+		int tempCount=0;
+		for (String playerName : playerTempHolder) {
+			player += playerName + ", ";
+			tempCount++;
+		}
+
+		tempCount=0;
+		for (String creatureName : creatures) {
+			int count = 0;
+			if(!creatureName.equals("!123456789!")){
+				while(creatures.contains(creatureName)){
+					creatures.set(creatures.indexOf(creatureName), "!123456789!");
+					count++;
+				}
+				creature += count + " " + creatureName + (count==1 ? "" : "s") + ", ";
+			}
+			tempCount++;
+		}
+
+		String tempString = "";
+		player = player.substring(0, player.lastIndexOf(", "));
+		if(player.lastIndexOf(", ")!=-1){
+			tempString = player.substring(player.lastIndexOf(", "), player.length());
+			player = player.replace(tempString, "");
+			player += " and";
+			tempString = tempString.trim();
+			tempString = tempString.replace(",", "");
+			player += tempString;
+		}
+
+		tempString = "";
+		creature = creature.substring(0, creature.lastIndexOf(", "));
+		if(creature.lastIndexOf(", ")!=-1){
+			tempString = creature.substring(creature.lastIndexOf(", "), creature.length());
+			creature = creature.replace(tempString, "");
+			creature += " and";
+			tempString = tempString.trim();
+			tempString = tempString.replace(",", "");
+			creature += tempString;
+		}
+
+		message = message.replace("$Player", player).replace("$Creature",creature).replace("$World", spawnWorld).replace("$p_was/were", 
+				(playerTempHolder.size()==1 ? "was" : "were")).replace("$c_was/were", (tempCount==1 ? "was" : "were"));
+
+		this.inst.getServer().broadcastMessage(ChatColor.DARK_RED + message);
+
+		player=null;
+		creature=null;
+		playerTempHolder=null;
+		tempString=null;
+
+		return;
+	}
+
+	/*
+	 * Handles the message to be sent to the player after each creature spawn
+	 */
+	private void playerMessageSender(String message, String creature, Player target){
+		if(message.length() * creature.length()== 0 || target==null){
+			return;
+		}
+
+		message = message.replace("$Player", target.getName()).replace("$Creature",creature);
+		target.sendMessage(ChatColor.RED + message);
+
+		return;
+	}
+
+	/*
+	 * Populates the list of creatures that this timer is allowed to spawn
+	 */
+	private void mobsList(){
+		this.mobs = new ArrayList<CreatureType>(0);
+		for (CreatureType creature : CreatureType.values()) {
+			if(this.inst.getConfig().getBoolean(worldName+".creature."+creature.getName().toLowerCase())){
+				this.mobs.add(creature);
+			}
+		}
+		return;
+	}
+}
