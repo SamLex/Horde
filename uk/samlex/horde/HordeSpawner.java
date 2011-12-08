@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -93,11 +95,12 @@ public class HordeSpawner implements Runnable {
 
 							spawn = target.getLocation().getBlock().getRelative(xCooSet, yCooSet, zCooSet);
 							if(this.inst.getConfig().getString("checks").equals("high")){
-								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0 && spawn.getRelative(0, 1, 0).getTypeId()==0 
-										&& spawn.getRelative(0, 2, 0).getTypeId()==0)
+								if(spawn.getType().equals(Material.AIR) && !spawn.getRelative(BlockFace.DOWN).getType().equals(Material.AIR) && 
+										!spawn.getRelative(BlockFace.UP).getType().equals(Material.AIR) && 
+										!spawn.getRelative(BlockFace.UP,2).getType().equals(Material.AIR))
 									break;
 							}else if(this.inst.getConfig().getString("checks").equals("low")){
-								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0)
+								if(spawn.getTypeId()==0 && spawn.getRelative(BlockFace.DOWN).getType().equals(Material.AIR))
 									break;
 							}else if(this.inst.getConfig().getString("checks").equals("none")){
 								break;
@@ -122,11 +125,12 @@ public class HordeSpawner implements Runnable {
 
 							spawn = target.getLocation().getBlock().getRelative(xCooSet, yCooSet, zCooSet);
 							if(this.inst.getConfig().getString("checks").equals("high")){
-								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0 && spawn.getRelative(0, 1, 0).getTypeId()==0 
-										&& spawn.getRelative(0, 2, 0).getTypeId()==0)
+								if(spawn.getType().equals(Material.AIR) && !spawn.getRelative(BlockFace.DOWN).getType().equals(Material.AIR) && 
+										!spawn.getRelative(BlockFace.UP).getType().equals(Material.AIR) && 
+										!spawn.getRelative(BlockFace.UP,2).getType().equals(Material.AIR))
 									break;
 							}else if(this.inst.getConfig().getString("checks").equals("low")){
-								if(spawn.getTypeId()==0 && spawn.getRelative(0, -1, 0).getTypeId()!=0)
+								if(spawn.getTypeId()==0 && spawn.getRelative(BlockFace.DOWN).getType().equals(Material.AIR))
 									break;
 							}else if(this.inst.getConfig().getString("checks").equals("none")){
 								break;
@@ -136,15 +140,14 @@ public class HordeSpawner implements Runnable {
 							}
 						}
 					}
-				}
-				if(!skip){
-					spawnedCreature = this.mobs.get(rand.nextInt(mobs.size()));
-					world.spawnCreature(spawn.getLocation(), spawnedCreature);
-					players.add(target.getName());
-					creatures.add(spawnedCreature.getName());
-					playerMessageSender(this.inst.getConfig().getString(worldName+".player message"), spawnedCreature.getName(), target);
-				}else{
-					System.out.println("Attempted a spawn but could not find a suitable location"); //!
+					if(!skip){
+						spawnedCreature = this.mobs.get(rand.nextInt(mobs.size()));
+						if(world.spawnCreature(spawn.getLocation(), spawnedCreature)!=null){
+							players.add(target.getName());
+							creatures.add(spawnedCreature.getName());
+							playerMessageSender(this.inst.getConfig().getString(worldName+".player message"), spawnedCreature.getName(), target);
+						}
+					}
 				}
 			}
 			serverMessageSender(this.inst.getConfig().getString(worldName+".server message"), players, creatures, worldName);
