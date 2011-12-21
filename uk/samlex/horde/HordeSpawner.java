@@ -152,12 +152,6 @@ public class HordeSpawner implements Runnable {
 			}
 			serverMessageSender(this.inst.getConfig().getString(worldName+".server message"), players, creatures, worldName);
 		}
-		rand = null;
-		target = null;
-		spawn = null;
-		spawnedCreature = null;
-		players = null; 
-		creatures = null;	
 	}
 
 	/*
@@ -222,11 +216,6 @@ public class HordeSpawner implements Runnable {
 				(playerTempHolder.size()==1 ? "was" : "were")).replace("$c_was/were", (tempCount==1 ? "was" : "were"));
 
 		this.inst.getServer().broadcastMessage(ChatColor.DARK_RED + message);
-
-		player=null;
-		creature=null;
-		playerTempHolder=null;
-		tempString=null;
 
 		return;
 	}

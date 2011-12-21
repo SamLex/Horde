@@ -83,17 +83,13 @@ public class HordeCommand implements CommandExecutor{
 						int time = this.inst.getConfig().getInt(w.getName()+".timer")*20;
 						hordeSpawner = new HordeSpawner(inst,w,true);
 						this.inst.getServer().getScheduler().scheduleAsyncRepeatingTask(inst, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}else{
 						this.print(w.getName() + " not found in configuration file - using defaults for this world");
 						int time = this.inst.getConfig().getInt("Default.timer")*20;
 						hordeSpawner = new HordeSpawner(inst,w,false);
 						this.inst.getServer().getScheduler().scheduleAsyncRepeatingTask(inst, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}
-					w = null;
 				}
-				iter = null;
 			}else{
 				Iterator<World> iter = this.inst.getServer().getWorlds().iterator();
 				while(iter.hasNext()){
@@ -101,10 +97,7 @@ public class HordeCommand implements CommandExecutor{
 					int time = this.inst.getConfig().getInt("Default.timer")*20;
 					hordeSpawner = new HordeSpawner(inst,w,false);
 					this.inst.getServer().getScheduler().scheduleAsyncRepeatingTask(inst, hordeSpawner, time, time);
-					hordeSpawner = null;
-					w = null;
 				}
-				iter = null;
 			}
 			return;
 		}else{
@@ -116,17 +109,13 @@ public class HordeCommand implements CommandExecutor{
 						int time = this.inst.getConfig().getInt(w.getName()+".timer")*20;
 						hordeSpawner = new HordeSpawner(inst,w,true);
 						this.inst.getServer().getScheduler().scheduleSyncRepeatingTask(inst, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}else{
 						this.print(w.getName() + " not found in configuration file - using defaults for this world");
 						int time = this.inst.getConfig().getInt("Default.timer")*20;
 						hordeSpawner = new HordeSpawner(inst,w,false);
 						this.inst.getServer().getScheduler().scheduleSyncRepeatingTask(inst, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}
-					w = null;
 				}
-				iter = null;
 			}else{
 				Iterator<World> iter = this.inst.getServer().getWorlds().iterator();
 				while(iter.hasNext()){
@@ -134,10 +123,7 @@ public class HordeCommand implements CommandExecutor{
 					int time = this.inst.getConfig().getInt("Default.timer")*20;
 					hordeSpawner = new HordeSpawner(inst,w,false);
 					this.inst.getServer().getScheduler().scheduleSyncRepeatingTask(inst, hordeSpawner, time, time);
-					hordeSpawner = null;
-					w = null;
 				}
-				iter = null;
 			}
 			return;
 		}

@@ -56,8 +56,6 @@ public class Horde extends JavaPlugin {
 		this.getServer().getScheduler().cancelTasks(this);
 		this.saveConfig();
 		this.print("Disabled. Goodbye");
-		hel = null;
-		hc = null;
 	}
 
 	/*
@@ -141,9 +139,7 @@ public class Horde extends JavaPlugin {
 				this.getConfig().set(w+".creature.wolf", true);
 			if(!this.getConfig().contains(w+".creature.zombie"))
 				this.getConfig().set(w+".creature.zombie", true);
-			w=null;
 		}
-		iter=null;
 		this.saveConfig();
 		return;
 	}
@@ -162,17 +158,13 @@ public class Horde extends JavaPlugin {
 						int time = this.getConfig().getInt(w.getName()+".timer")*20;
 						hordeSpawner = new HordeSpawner(this,w,true);
 						this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}else{
 						this.print(w.getName() + " not found in configuration file - using defaults for this world");
 						int time = this.getConfig().getInt("Default.timer")*20;
 						hordeSpawner = new HordeSpawner(this,w,false);
 						this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}
-					w = null;
 				}
-				iter = null;
 			}else{
 				Iterator<World> iter = this.getServer().getWorlds().iterator();
 				while(iter.hasNext()){
@@ -180,10 +172,7 @@ public class Horde extends JavaPlugin {
 					int time = this.getConfig().getInt("Default.timer")*20;
 					hordeSpawner = new HordeSpawner(this,w,false);
 					this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, hordeSpawner, time, time);
-					hordeSpawner = null;
-					w = null;
 				}
-				iter = null;
 			}
 			return;
 		}else{
@@ -195,17 +184,13 @@ public class Horde extends JavaPlugin {
 						int time = this.getConfig().getInt(w.getName()+".timer")*20;
 						hordeSpawner = new HordeSpawner(this,w,true);
 						this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}else{
 						this.print(w.getName() + " not found in configuration file - using defaults for this world");
 						int time = this.getConfig().getInt("Default.timer")*20;
 						hordeSpawner = new HordeSpawner(this,w,false);
 						this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
-						hordeSpawner = null;
 					}
-					w = null;
 				}
-				iter = null;
 			}else{
 				Iterator<World> iter = this.getServer().getWorlds().iterator();
 				while(iter.hasNext()){
@@ -213,10 +198,7 @@ public class Horde extends JavaPlugin {
 					int time = this.getConfig().getInt("Default.timer")*20;
 					hordeSpawner = new HordeSpawner(this,w,false);
 					this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
-					hordeSpawner = null;
-					w = null;
 				}
-				iter = null;
 			}
 			return;
 		}
