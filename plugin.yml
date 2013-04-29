@@ -1,0 +1,9 @@
+name: Horde
+version: 2.1a
+main: uk.samlex.horde.Horde
+author: Sam_lex
+description: Provides highly configurable waves of creature spawns
+commands:
+   horde:
+     description: Reloads the configuration values from disk
+     aliases: reloadhorde

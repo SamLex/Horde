@@ -1,0 +1,36 @@
+async: false
+multi: true
+checks: high
+Default: 
+   timer: 30
+   number of monsters: 0
+   random cap: 10
+   min distance: 20
+   max distance: 50
+   sunburn: false
+   time start: 0
+   time stop: 24000
+   server message: $Player $p_was/were targeted by $Creature on $World
+   player message: You have been targeted by a $Creature
+   creature: 
+      blaze: true
+      cave spider: true
+      chicken: true
+      cow: true
+      creeper: true
+      ender dragon: false
+      enderman: true
+      ghast: true
+      giant: true
+      mushroom cow: true
+      pig: true
+      pig zombie: true
+      sheep: true
+      silverfish: true
+      skeleton: true
+      slime: true
+      spider: true
+      squid: true
+      villager: true
+      wolf: true
+      zombie: true
