@@ -1,4 +1,3 @@
-async: false
 multi: true
 checks: high
 Default: 

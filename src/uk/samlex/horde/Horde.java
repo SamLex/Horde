@@ -150,58 +150,31 @@ public class Horde extends JavaPlugin {
      */
     private void spawnTimers() {
         HordeSpawner hordeSpawner;
-        if (this.getConfig().getBoolean("async")) {
-            if (this.getConfig().getBoolean("multi")) {
-                Iterator<World> iter = this.getServer().getWorlds().iterator();
-                while (iter.hasNext()) {
-                    World w = iter.next();
-                    if (this.getConfig().contains(w.getName())) {
-                        int time = this.getConfig().getInt(w.getName() + ".timer") * 20;
-                        hordeSpawner = new HordeSpawner(this, w, true);
-                        this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, hordeSpawner, time, time);
-                    } else {
-                        this.print(w.getName() + " not found in configuration file - using defaults for this world");
-                        int time = this.getConfig().getInt("Default.timer") * 20;
-                        hordeSpawner = new HordeSpawner(this, w, false);
-                        this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, hordeSpawner, time, time);
-                    }
-                }
-            } else {
-                Iterator<World> iter = this.getServer().getWorlds().iterator();
-                while (iter.hasNext()) {
-                    World w = iter.next();
-                    int time = this.getConfig().getInt("Default.timer") * 20;
-                    hordeSpawner = new HordeSpawner(this, w, false);
-                    this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, hordeSpawner, time, time);
-                }
-            }
-            return;
-        } else {
-            if (this.getConfig().getBoolean("multi")) {
-                Iterator<World> iter = this.getServer().getWorlds().iterator();
-                while (iter.hasNext()) {
-                    World w = iter.next();
-                    if (this.getConfig().contains(w.getName())) {
-                        int time = this.getConfig().getInt(w.getName() + ".timer") * 20;
-                        hordeSpawner = new HordeSpawner(this, w, true);
-                        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
-                    } else {
-                        this.print(w.getName() + " not found in configuration file - using defaults for this world");
-                        int time = this.getConfig().getInt("Default.timer") * 20;
-                        hordeSpawner = new HordeSpawner(this, w, false);
-                        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
-                    }
-                }
-            } else {
-                Iterator<World> iter = this.getServer().getWorlds().iterator();
-                while (iter.hasNext()) {
-                    World w = iter.next();
+        if (this.getConfig().getBoolean("multi")) {
+            Iterator<World> iter = this.getServer().getWorlds().iterator();
+            while (iter.hasNext()) {
+                World w = iter.next();
+                if (this.getConfig().contains(w.getName())) {
+                    int time = this.getConfig().getInt(w.getName() + ".timer") * 20;
+                    hordeSpawner = new HordeSpawner(this, w, true);
+                    this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
+                } else {
+                    this.print(w.getName() + " not found in configuration file - using defaults for this world");
                     int time = this.getConfig().getInt("Default.timer") * 20;
                     hordeSpawner = new HordeSpawner(this, w, false);
                     this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
                 }
             }
-            return;
+        } else {
+            Iterator<World> iter = this.getServer().getWorlds().iterator();
+            while (iter.hasNext()) {
+                World w = iter.next();
+                int time = this.getConfig().getInt("Default.timer") * 20;
+                hordeSpawner = new HordeSpawner(this, w, false);
+                this.getServer().getScheduler().scheduleSyncRepeatingTask(this, hordeSpawner, time, time);
+            }
         }
+        return;
+
     }
 }
