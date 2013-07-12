@@ -175,6 +175,5 @@ public class Horde extends JavaPlugin {
             }
         }
         return;
-
     }
 }
