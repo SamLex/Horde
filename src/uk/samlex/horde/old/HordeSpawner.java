@@ -15,7 +15,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package uk.samlex.horde;
+package uk.samlex.horde.old;
 
 import java.util.ArrayList;
 import java.util.Random;

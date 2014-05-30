@@ -1,9 +1,66 @@
 name: Horde
-version: 2.1a
+version: 3.0
 main: uk.samlex.horde.Horde
 author: Sam_lex
-description: Provides highly configurable waves of creature spawns
+description: TODO
+database: true
 commands:
-   horde:
-     description: Reloads the configuration values from disk
-     aliases: reloadhorde
+    horde-create:
+        description: Creates a new zone
+        usage: /horde-create <zone name> [world name]
+        permission: horde.create
+        permission-message: You don't have permission to create a new zone
+    horde-list:
+        description: Lists current zones
+        usage: /horde-list [world name]
+        permission: horde.list
+        permission-message: You don't have permission to list current zones
+    horde-reload:
+        description: Reloads the config file
+        usage: /horde-reload
+        permission: horde.reload
+        permission-message: You don't have permission to reload the config file
+    horde-remove:
+        description: Removes an existing zone
+        usage: /horde-remove <zone name> [world name]
+        permission: horde.remove
+        permission-message: You don't have permission to remove an existing zone
+    horde-set:
+        description: Set the coordinates of an existing zone
+        usage: /horde-set <zone name> one|two [x] [y] [z] [world name]
+        permission: horde.set
+        permission-message: You don't have permission to change an existing zone
+    horde-preview:
+        description: Visibly see an existing zone using blocks. Types available are corners, fill, hollow, outline.
+        usage: /horde-preview <zone name> <preview type> <block> <replace> [world name]
+        permission: horde.preview
+        permission-message: You don't have permission to preview an existing zone
+permissions:
+    horde.*:
+        description: Gives access to all Horde commands
+        children:
+            horde.create: true
+            horde.list: true
+            horde.reload: true
+            horde.remove: true
+            horde.set: true
+            horde.preview: true
+    horde.create:
+        description: Allows you to create a new zone
+        default: op
+    horde.list:
+        description: Allows you to list current zones
+        default: op
+    horde.reload:
+        description: Allows you to reload the config file
+        default: op
+    horde.remove:
+        description: Allows you to remove an existing zone
+        default: op
+    horde.set:
+        description: Allows you to set coordinates for an existing zone
+        default: op
+    horde.preview:
+        description: Allows you to visibly see an existing zone
+        default: op
+

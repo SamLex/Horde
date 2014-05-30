@@ -15,7 +15,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package uk.samlex.horde;
+package uk.samlex.horde.old;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
