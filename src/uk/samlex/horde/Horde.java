@@ -5,17 +5,21 @@ import java.util.List;
 
 import javax.persistence.PersistenceException;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import uk.samlex.bukkitcommon.BukkitPlugin;
+import uk.samlex.bukkitcommon.config.WorldZone;
+import uk.samlex.horde.config.ConfigStore;
 
-import uk.samlex.horde.config.WorldZone;
-
-public class Horde extends JavaPlugin {
+public class Horde extends BukkitPlugin {
 
     private static Horde INSTANCE;
 
+    public Horde() {
+        INSTANCE = this;
+    }
+
     @Override
     public void onEnable() {
-        INSTANCE = this;
+        new ConfigStore();
     }
 
     @Override
@@ -23,10 +27,7 @@ public class Horde extends JavaPlugin {
 
     }
 
-    public static Horde instance() {
-        return INSTANCE;
-    }
-
+    @Override
     public void checkDatabase() {
         try {
             getDatabase().find(WorldZone.class).findRowCount();
@@ -41,5 +42,9 @@ public class Horde extends JavaPlugin {
         ArrayList<Class<?>> dbClasses = new ArrayList<Class<?>>(1);
         dbClasses.add(WorldZone.class);
         return dbClasses;
+    }
+
+    public static Horde instance() {
+        return INSTANCE;
     }
 }
