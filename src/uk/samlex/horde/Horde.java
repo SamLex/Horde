@@ -6,7 +6,13 @@ import java.util.List;
 import javax.persistence.PersistenceException;
 
 import uk.samlex.bukkitcommon.BukkitPlugin;
-import uk.samlex.bukkitcommon.config.WorldZone;
+import uk.samlex.bukkitcommon.command.ConfigReloadCommand;
+import uk.samlex.bukkitcommon.zone.command.ZoneCreateCommand;
+import uk.samlex.bukkitcommon.zone.command.ZoneListCommand;
+import uk.samlex.bukkitcommon.zone.command.ZonePreviewCommand;
+import uk.samlex.bukkitcommon.zone.command.ZoneRemoveCommand;
+import uk.samlex.bukkitcommon.zone.command.ZoneSetCommand;
+import uk.samlex.bukkitcommon.zone.config.WorldZone;
 import uk.samlex.horde.config.ConfigStore;
 
 public class Horde extends BukkitPlugin {
@@ -20,6 +26,13 @@ public class Horde extends BukkitPlugin {
     @Override
     public void onEnable() {
         new ConfigStore();
+
+        new ZoneCreateCommand(instance(), "horde-create");
+        new ZoneListCommand(instance(), "horde-list");
+        new ZonePreviewCommand(instance(), "horde-preview");
+        new ConfigReloadCommand(instance(), "horde-reload");
+        new ZoneRemoveCommand(instance(), "horde-remove");
+        new ZoneSetCommand(instance(), "horde-set");
     }
 
     @Override
@@ -46,5 +59,10 @@ public class Horde extends BukkitPlugin {
 
     public static Horde instance() {
         return INSTANCE;
+    }
+
+    @Override
+    public void reloadConfig() {
+        ConfigStore.instance().reloadConfig();
     }
 }
